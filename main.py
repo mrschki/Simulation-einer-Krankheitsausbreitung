@@ -18,6 +18,7 @@ class Point:
         self.is_infected = False
         self.infected_this_round = None
         self.is_healed = False
+        self.healed_this_round = None
 
     def __repr__(self):
         return f'Coordinates are: {self.x}, {self.y}'
@@ -58,9 +59,10 @@ all_points[0].infected_this_round = 0
 
 radius_size = 20
 colour = np.zeros(number_of_points)
-susceptible = []
-infectious = []
-recovered = []
+
+infected_this_round =[]
+recovered_this_round = []
+
 
 
 def update(i):
@@ -68,29 +70,40 @@ def update(i):
         p.move()
         if i % 150 == p.update_direction:
             p.velocity = [random.randint(-2, 2), random.randint(-2, 2)]
-        if p.is_infected:
-            infectious.append(p)
-        elif not p.is_infected:
-            susceptible.append(p)
-        elif p.is_healed:
-            recovered.append(p)
+        if p.infected_this_round:
+            infected_this_round.append(p)
+        if p.healed_this_round:
+            recovered_this_round.append(p)
+        #if p.is_infected:
+        #    infectious.append(p)
+        #elif not p.is_infected:
+        #    susceptible.append(p)
+        #elif p.is_healed:
+        #    recovered.append(p)
     xs, ys = points_to_array(all_points)
     scat.set_offsets(np.stack((xs, ys), axis=-1))
 
     radius(radius_size, colour, i)
     scat.set_array(colour)
-    healing(colour, i)
+    healing(colour, i, i)
     #move_to_center_location()
 
 
-def healing(c, i):
+infectious = [len(infected_this_round)]
+recovered = [len(recovered_this_round)]
+susceptible = [number_of_points - infectious[0] - recovered[0]]
+
+
+def healing(c, i, round):
     for j in range(len(all_points)):
         p = all_points[j]
         if p.is_infected:
-            if i == 600 + p.infected_this_round:
+            if i == 900 + p.infected_this_round:
                 p.is_infected = False
-                p.is_healed = True
+                p.healed_this_round = round
                 c[j] = 0.5
+                if p.healed_this_round == round:
+                    p.is_healed = True
 
 
 infection_probability = 0.4
@@ -126,10 +139,11 @@ def radius(r, c, round):
         if p.infected_this_round == round:
             p.is_infected = True
 
+
         
 
 center_probability = 0.0005
-t = np.linspace(0, 160)
+t = [i for i in range(600)]
 
 
 def move_to_center_location():
@@ -152,15 +166,17 @@ scat = ax1.scatter(xs, ys,
                     c=np.zeros(xs.shape[0]),
                     cmap=mpl.colors.ListedColormap(['blue', 'grey', 'red']),
                     vmin=0, vmax=1)
-#ax1.plot(centerpoint_x, centerpoint_y, 'Dk')
+ax1.plot(centerpoint_x, centerpoint_y, 'Dk')
 
-#ax2.plot(t, susceptible)
-#ax2.plot(t, infectious)
-#ax2.plot(t, recovered)
 
-ani = animation.FuncAnimation(fig, update, interval=10)#, frames=range(6000), repeat=False)
-Writer = animation.writers['ffmpeg']
-writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
-ani.save('CentralLocation.mp4', writer=writer)
+
+ani = animation.FuncAnimation(fig, update, interval=10, frames=range(600-1), repeat=False)
+#Writer = animation.writers['ffmpeg']
+#writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
+#ani.save('CentralLocation.mp4', writer=writer)
 plt.show()
 
+plt.plot(t, susceptible)
+plt.plot(t, infectious)
+plt.plot(t, recovered)
+plt.show()
