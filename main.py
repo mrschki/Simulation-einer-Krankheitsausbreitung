@@ -328,7 +328,6 @@ epidemic_simulation(number_of_points=35, infection_probability=0.6, radius_size=
 
 
 """
-
 Hier wird dis Simulation oft Durchgeführt um quantitative Daten zu sammeln.
 
 x_axis = []
