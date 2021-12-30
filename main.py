@@ -85,7 +85,7 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     all_points[0].infected_this_round = 0
 
 
-    colour = np.zeros(4 * number_of_points)
+    colour = np.zeros(number_of_points)
 
     infectious = []
     recovered = []
@@ -98,11 +98,11 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
             p.move()
             if i % 150 == p.update_direction:
                 p.velocity = [0.5 * random.randint(-1, 1), 0.5 * random.randint(-1, 1)]
-        #xs, ys = points_to_array(all_points)
-        #scat.set_offsets(np.stack((xs, ys), axis=-1))
+        xs, ys = points_to_array(all_points)
+        scat.set_offsets(np.stack((xs, ys), axis=-1))
 
         radius(radius_size, colour, i)
-        #scat.set_array(colour)
+        scat.set_array(colour)
         healing(colour, i, i)
         for p in all_points:
             if p.infected_this_round is not None:
@@ -258,7 +258,7 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
 
 
     #fig, (ax1, ax2) = plt.subplots(2)
-    #fig, ax = plt.subplots()
+    fig, ax = plt.subplots()
     centerpoint1_x = box1_x[1] / 2
     centerpoint1_y = box1_y[1] / 2
     centerpoint2_x = centerpoint1_x + box2_x[0]
@@ -268,7 +268,7 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     centerpoint4_x = centerpoint2_x
     centerpoint4_y = centerpoint3_y
 
-    """
+
     ax.set(xlim=(box1_x[0], box2_x[1]), ylim=(box1_y[0], box3_y[1]))
     ax.axes.xaxis.set_visible(False)
     ax.axes.yaxis.set_visible(False)
@@ -277,12 +277,12 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
                       c=np.zeros(xs.shape[0]),
                       cmap=mpl.colors.ListedColormap(['blue', 'grey', 'red']),
                       vmin=0, vmax=1)
-                      
+
     ax.plot(centerpoint1_x, centerpoint1_y, 'Dk')
     ax.plot(centerpoint2_x, centerpoint2_y, "Dk")
     ax.plot(centerpoint3_x, centerpoint3_y, "Dk")
     ax.plot(centerpoint4_x, centerpoint4_y, "Dk")
-    """
+
     reproduction_number = []
 
 
@@ -292,27 +292,28 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     #writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
     #ani.save('CentralLocation.mp4', writer=writer)
     #plt.show()
-    t = []#i for i in range(3000)]
+    t = [i for i in range(3000)]
     i = 0
-    #simulation_running = False
-    simulation_running = True
+    simulation_running = False
+    #simulation_running = True
     while simulation_running:
         update(i)
         i = i + 1
         t.append(i)
         if min(infectious) == 0:
             simulation_running = False
-    """
+
     ax.vlines(box1_x[1], ymin=box1_y[0], ymax=box3_y[1], colors="black")
     ax.vlines(box2_x[0], ymin=box2_y[0], ymax=box3_y[1], colors="black")
     ax.hlines(box1_y[1], xmax=box2_x[1], xmin=box1_x[0], colors="black")
     ax.hlines(box3_y[0], xmax=box2_x[1], xmin=box1_x[0], colors="black")
+
     ani = animation.FuncAnimation(fig, update, interval=20, frames=range(len(t) - 1), repeat=False)
-    plt.show()"""
+    plt.show()
     for p in all_points:
         if p.infected_this_round is not None:
             reproduction_number.append(p.reproduction)
-            """
+
     plt.plot(t, susceptible, label="Susceptible")
     plt.plot(t, infectious, label="Infectious")
     plt.plot(t, recovered, label="Recovered")
@@ -336,18 +337,18 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     with open('Reproduktionszahl.txt', 'w') as f:
         f.write(f"{base_repoduction}, ")
     return peak, infectious, disease_extinct, base_repoduction, susceptible
+    """
 
+epidemic_simulation(number_of_points=35, infection_probability=0.6, radius_size=13, healing_time=600)
 
-#epidemic_simulation(number_of_points=30, infection_probability=0.6, radius_size=10, healing_time=600)
-
-
+"""
 x_axis = []
 all_peaks = []
 all_extinct = []
 all_reproduction = []
 all_susceptible = []
 point = 30
-radius = 12
+radius = 13
 infection = 0.0
 healing = 600
 for h in range(50):
@@ -376,7 +377,7 @@ for h in range(50):
     #x_axis.append(radius)
     infection = infection + 1./50
     x_axis.append(infection)
-    #healing = healing + 100
+    #healing = healing + 50
     #x_axis.append(healing)
 print(all_peaks)
 print(all_reproduction)
@@ -396,3 +397,4 @@ plt.savefig("extinct")
 plt.plot(x_axis, all_reproduction, label="Reproduction")
 plt.legend()
 plt.savefig("reproduction")
+"""
