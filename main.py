@@ -41,7 +41,6 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
         def to_list(self):
             return [self.x, self.y]
 
-
     def points_to_array(points):
         num_points = len(points)
         xs = np.zeros(num_points)
@@ -52,7 +51,6 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
             xs[i] = c.x
             ys[i] = c.y
         return xs, ys
-
 
     all_points = []
 
@@ -67,26 +65,20 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
 
     for _ in range(number_of_points):
         all_points.append(Point(random.randint(box1_x[0], box1_x[1]), random.randint(box1_y[0],
-                                box1_y[1]), box1_x, box1_y, in_box=0)
-                          )
+                                box1_y[1]), box1_x, box1_y, in_box=0))
     for _ in range(number_of_points):
         all_points.append(Point(random.randint(box2_x[0], box2_x[1]), random.randint(box2_y[0], box2_y[1]),
-                                box2_x, box2_y, in_box=1)
-                          )
+                                box2_x, box2_y, in_box=1))
     for _ in range(number_of_points):
         all_points.append(Point(random.randint(box3_x[0], box3_x[1]), random.randint(box3_y[0], box3_y[1]),
-                                    box3_x, box3_y, in_box=2)
-                              )
+                                box3_x, box3_y, in_box=2))
     for _ in range(number_of_points):
         all_points.append(Point(random.randint(box4_x[0], box4_x[1]), random.randint(box4_y[0], box4_y[1]),
-                                        box4_x, box4_y, in_box=3)
-                                  )
+                                box4_x, box4_y, in_box=3))
     all_points[0].is_infected = True
     all_points[0].infected_this_round = 0
 
-
     colour = np.zeros(number_of_points)
-
     infectious = []
     recovered = []
     susceptible = []
@@ -109,8 +101,8 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
                 list_of_infected.append(p)
             if p.healed_this_round is not None:
                 list_of_recovered.append(p)
-        #move_to_center_location()
-        change_box()
+        #move_to_center_location() # Mit Zentrum
+        change_box() #mit Reisen unter verschiedenen Kolonien
         infectious.append(len(list_of_infected) - len(list_of_recovered))
         recovered.append(len(list_of_recovered))
         susceptible.append(len(all_points) - len(list_of_infected))
@@ -125,10 +117,6 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
                     c[j] = 0.5
                     if p.healed_this_round == rounds:
                         p.is_healed = True
-
-
-
-
 
     def radius(r, c, rounds):
         num_points = len(all_points)
@@ -154,8 +142,6 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
                         if q.infected_this_round is None:
                             q.infected_this_round = rounds
                             p.reproduction = p.reproduction + 1
-
-
                 if p.is_infected:
                     c[i] = 1
                 if q.is_infected:
@@ -164,12 +150,10 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
             if p.infected_this_round == rounds:
                 p.is_infected = True
 
-
-    #timesteps = 1000
     center_probability = 0.0005
-    #t = [i for i in range(timesteps)]
     change_probability = 0.0005
     box_probability = 0.25
+
     def change_box():
         for p in all_points:
             if random.random() <= change_probability:
@@ -256,8 +240,6 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
                 p.x = centerpoint1_x
                 p.y = centerpoint1_y
 
-
-    #fig, (ax1, ax2) = plt.subplots(2)
     fig, ax = plt.subplots()
     centerpoint1_x = box1_x[1] / 2
     centerpoint1_y = box1_y[1] / 2
@@ -287,11 +269,13 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
 
 
 
+    #Hier kann ein Video eines Durchlaufs gespeichert werden.
 
     #Writer = animation.writers['ffmpeg']
     #writer = Writer(fps=60, metadata=dict(artist='Me'), bitrate=1800)
     #ani.save('CentralLocation.mp4', writer=writer)
     #plt.show()
+
     t = [i for i in range(3000)]
     i = 0
     simulation_running = False
@@ -320,7 +304,7 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     plt.legend()
     plt.savefig("SIR-Graph")
     plt.show()
-    """
+
     base_repoduction = reproduction_number[0]
 
     peak = infectious[infectious.index(max(infectious))]#, infectious.index(max(infectious))]
@@ -337,11 +321,16 @@ def epidemic_simulation(number_of_points, radius_size, infection_probability, he
     with open('Reproduktionszahl.txt', 'w') as f:
         f.write(f"{base_repoduction}, ")
     return peak, infectious, disease_extinct, base_repoduction, susceptible
-    """
+
 
 epidemic_simulation(number_of_points=35, infection_probability=0.6, radius_size=13, healing_time=600)
 
+
+
 """
+
+Hier wird dis Simulation oft Durchgeführt um quantitative Daten zu sammeln.
+
 x_axis = []
 all_peaks = []
 all_extinct = []
